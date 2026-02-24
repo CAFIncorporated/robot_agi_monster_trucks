@@ -1,0 +1,25 @@
+# Build outputs – avoid overwriting restore/publish state in container
+**/obj/
+**/bin/
+
+# IDE and tools
+**/.vs/
+**/.vscode/
+**/*.user
+**/.idea/
+
+# NuGet local
+**/packages/
+**/*.nupkg
+
+# Git
+**/.git/
+**/.gitignore
+
+# Docker
+**/Dockerfile*
+**/.dockerignore
+
+# Misc
+**/*.md
+**/design_choices/

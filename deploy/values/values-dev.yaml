@@ -1,0 +1,17 @@
+environment: Development
+
+replicaCount: 1
+
+image:
+  pullPolicy: Always
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 250m
+    memory: 128Mi
+
+secrets:
+  postgresConnection: "Host=psql-dev;Port=5432;Database=coordinates;Username=app;Password=app"

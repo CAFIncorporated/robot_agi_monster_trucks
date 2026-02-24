@@ -1,0 +1,12 @@
+# Default owner for everything
+* @your-github-username
+
+# Infrastructure
+/deploy/ @your-github-username
+/docker/ @your-github-username
+/.github/ @your-github-username
+
+# Application
+/lib/ @your-github-username
+/test/ @your-github-username
+/config/ @your-github-username

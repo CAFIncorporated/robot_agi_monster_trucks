@@ -1,0 +1,30 @@
+{
+  "runtime": "Net80",
+  "documentGenerator": {
+    "openApiDocument": {
+      "url": "openapi.json"
+    }
+  },
+  "codeGenerators": {
+    "openApiToCSharpClient": {
+      "className": "CoordinateServiceClient",
+      "namespace": "CoordinateService.Client",
+      "generateClientClasses": true,
+      "generateClientInterfaces": false,
+      "generateDtoTypes": true,
+      "injectHttpClient": true,
+      "disposeHttpClient": false,
+      "useHttpClientCreationMethod": false,
+      "useBaseUrl": false,
+      "generateBaseUrlProperty": false,
+      "generateExceptionClasses": true,
+      "wrapDtoExceptions": false,
+      "generateSyncMethods": false,
+      "operationGenerationMode": "SingleClientFromOperationId",
+      "arrayType": "System.Collections.Generic.IList",
+      "arrayInstanceType": "System.Collections.Generic.List",
+      "jsonLibrary": "SystemTextJson",
+      "output": "Generated/CoordinateServiceClient.g.cs"
+    }
+  }
+}

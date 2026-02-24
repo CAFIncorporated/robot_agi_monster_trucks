@@ -1,0 +1,26 @@
+# Repository settings (probot/settings or similar)
+repository:
+  name: coordinate-service
+  description: Simple coordinate storage microservice
+  private: false
+  has_issues: true
+  has_projects: false
+  has_wiki: false
+  default_branch: main
+  allow_squash_merge: true
+  allow_merge_commit: true
+  allow_rebase_merge: true
+  delete_branch_on_merge: true
+
+branches:
+  - name: main
+    protection:
+      required_pull_request_reviews:
+        required_approving_review_count: 0
+        dismiss_stale_reviews: false
+      required_status_checks:
+        strict: false
+        contexts:
+          - build-and-test
+      enforce_admins: false
+      restrictions: null

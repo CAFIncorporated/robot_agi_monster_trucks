@@ -1,0 +1,25 @@
+environment: Production
+
+replicaCount: 3
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  host: coordinates.example.com
+  tls: true
+
+networkPolicy:
+  enabled: true
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: "1"
+    memory: 512Mi
+
+secrets:
+  postgresConnection: "Host=psql-prod;Port=5432;Database=coordinates;Username=app;Password=REPLACE_ME"
