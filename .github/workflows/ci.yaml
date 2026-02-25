@@ -38,10 +38,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Lint Dockerfiles
+      - name: Lint Prod Dockerfile
         uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: docker/prod.Dockerfile
+
+      - name: Lint Test Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: docker/test.Dockerfile
 
   helm-lint:
     runs-on: ubuntu-latest
