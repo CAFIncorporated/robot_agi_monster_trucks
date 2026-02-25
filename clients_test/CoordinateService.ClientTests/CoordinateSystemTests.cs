@@ -98,7 +98,7 @@ public class CoordinateSystemTests : IClassFixture<TestWebAppFactory>
             _client.CreateCoordinateSystemAsync(new CreateCoordinateSystemRequest { Name = "will-delete", Width = 10, Height = 10 }));
         var (pt, _) = await ClientTestHelper.RunAsync(() =>
             _client.CreatePointAsync(sys!.Id, new CreatePointRequest { X = 0, Y = 0, Direction = Direction.N }));
-        await _client.DeleteCoordinateSystemAsync(sys.Id);
+        await _client.DeleteCoordinateSystemAsync(sys!.Id);
 
         var (_, status) = await ClientTestHelper.RunAsync(() => _client.GetPointAsync(pt!.Id));
         status.Should().Be(HttpStatusCode.NotFound);
