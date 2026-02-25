@@ -12,4 +12,5 @@ target "test" {
   dockerfile = "docker/test.Dockerfile"
   context    = "."
   tags       = ["coordinate-service:test"]
+  output     = ["type=docker"]
 }
