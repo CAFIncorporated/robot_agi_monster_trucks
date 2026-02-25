@@ -4,6 +4,8 @@ persistent connection where commands come 1 after another in short span would ne
 
 How should clients talk to the API — persistent WebSocket or request-response HTTP?
 
+Resources: https://medium.com/@codebob75/creating-and-consuming-apis-in-net-c-d24f9c414b96
+
 ## Options
 
 **A. HTTP only** — REST over HTTP; one request, one response; no long-lived connection.
