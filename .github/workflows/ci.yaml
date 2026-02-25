@@ -23,7 +23,7 @@ jobs:
         run: |
           mkdir -p test-results/unit tests-results/client
           docker run --name ci-tests coordinate-service:test || true
-          EXIT=$(docker insptact ci-tests --format '{{.State.ExitCode}}')
+          EXIT=$(docker inspect ci-tests --format '{{.State.ExitCode}}')
           docker cp ci-tests:/src/test/CoodinateService.Tests/bin/Release/net10.0/TestResults/. test-results/uni/ 2>/dev/null || true
           docker cp ci-tests:/src/clients_test/CoodinateService.ClientTests/bin/Release/net10.0/testResults/. test-results/client/ 2>/dev/null || true
           docker rm ci-tests 2>/dev/null || true
@@ -38,7 +38,6 @@ jobs:
   e2e:
     name: e2e (curl docker compose psql)
     runs-on: ubuntu-latest
-    needs: docker-test
     steps:
       - uses: actions/checkout@v4
 
