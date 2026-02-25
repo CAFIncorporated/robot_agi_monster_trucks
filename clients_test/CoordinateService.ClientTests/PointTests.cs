@@ -27,7 +27,7 @@ public class PointTests : IClassFixture<TestWebAppFactory>
         pt!.X.Should().Be(5);
         pt.Y.Should().Be(5);
         pt.Direction.Should().Be(Direction.N);
-        pt.SystemId.Should().Be(sys.Id);
+        pt.SystemId.Should().Be(sys!.Id);
     }
 
     [Fact]

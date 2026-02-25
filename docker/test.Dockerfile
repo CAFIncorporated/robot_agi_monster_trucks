@@ -14,7 +14,7 @@ COPY clients/ clients/
 COPY clients_test/ clients_test/
 COPY config/ config/
 COPY openapi.json ./
-RUN dotnet restore
-RUN dotnet build --no-restore -c Release
+RUN dotnet restore && \
+    dotnet build --no-restore -c Release
 
 ENTRYPOINT ["dotnet", "test", "--no-build", "-c", "Release", "--verbosity", "normal", "--logger", "trx;LogFileName=results.trx"]

@@ -6,8 +6,8 @@ COPY lib/Observability/Observability.csproj lib/Observability/
 COPY lib/CoordinateService/CoordinateService.csproj lib/CoordinateService/
 COPY lib/ lib/
 COPY config/ config/
-RUN dotnet restore lib/CoordinateService/CoordinateService.csproj
-RUN dotnet publish lib/CoordinateService/CoordinateService.csproj \
+RUN dotnet restore lib/CoordinateService/CoordinateService.csproj && \
+    dotnet publish lib/CoordinateService/CoordinateService.csproj \
     -c Release \
     -o /app/publish \
     --no-restore
