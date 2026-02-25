@@ -5,7 +5,7 @@ A .NET 10 microservice for coordinate systems and points: create systems (width�
 See [docs/architecture.md](docs/architecture.md) for a Mermaid flow of how the service is called from a gateway, how caching and cache eviction work, and how PostgreSQL is used.
 
 ## Project Structure
-
+```
 **.github/** — CI/CD workflows (ci, cd), repo settings
 **config/** — appsettings per environment
 **deploy/** — Helm chart (templates, values per env)
@@ -16,35 +16,49 @@ See [docs/architecture.md](docs/architecture.md) for a Mermaid flow of how the s
 **clients_test/** — client/integration tests
 **scripts/** — E2E curl script
 **openapi.json**, **CoordinateService.sln**, **docker-bake.hcl**, **Makefile**
+```
 
 ## Quick Start
 
 ### Local development with Docker Compose
+
+```
 bash
 make up        # Start app + PostgreSQL (port 18080)
 make logs     # Tail logs
 make down     # Stop everything
+```
 
 ### Build images
+
+```
 bash
 make bake          # Build all images (prod + test)
 make bake-prod     # Build production image only
 make bake-test     # Build test image only
+```
 
 ### Run tests
+
+```
 bash
 make test                  # All tests locally (requires .NET SDK; DB tests use Testcontainers)
 make test-db-writes        # DB persistence tests only (Testcontainers; container removed after)
 make test-db-writes-compose # DB persistence tests vs compose stack; data stays in psql for inspection (run make up first)
 make docker-test           # Build test image and run tests in Docker
 make e2e                   # Start compose and run curl E2E script
+```
 
 Database persistence tests call the API then query PostgreSQL to verify writes. Use test-db-writes-compose if you want to inspect data in the compose psql container after the run.
 
 ### OpenAPI spec
+
+```
 bash
 make up
 make generate-spec   # Fetches swagger from app and writes openapi.json
+```
+
 
 ## API Endpoints
 
