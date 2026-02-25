@@ -8,6 +8,7 @@ on:
 
 env:
   IMAGE_NAME: coordinate-service
+  REPO_NAME: robot_agi_monster_trucks
 
 jobs:
   build-and-push:
@@ -35,5 +36,5 @@ jobs:
           targets: prod
           push: true
           set: |
-            prod.tags=ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
-            prod.tags=ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
+            prod.tags=ghcr.io/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+            prod.tags=ghcr.io/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:latest
