@@ -5,6 +5,7 @@ A .NET 10 microservice for coordinate systems and points: create systems (width�
 See [docs/architecture.md](docs/architecture.md) for a Mermaid flow of how the service is called from a gateway, how caching and cache eviction work, and how PostgreSQL is used.
 
 ## Project Structure
+
 ```
 **.github/** — CI/CD workflows (ci, cd), repo settings
 **config/** — appsettings per environment
