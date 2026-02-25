@@ -6,6 +6,10 @@ on:
       - "v*"
   workflow_dispatch:
 
+env:
+  IMAGE_NAME: coordinate-service
+  REPOSITORY_OWNER: christosfranco
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -32,5 +36,5 @@ jobs:
           targets: prod
           push: true
           set: |
-            prod.tags=ghcr.io/${{ github.repository }}:${{ github.ref_name }}
-            prod.tags=ghcr.io/${{ github.repository }}:latest
+            prod.tags=ghcr.io/${{ env.REPOSITORY_OWNER }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+            prod.tags=ghcr.io/${{ env.REPOSITORY_OWNER }}/${{ env.IMAGE_NAME }}:latest

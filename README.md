@@ -2,49 +2,21 @@
 
 A .NET 10 microservice for coordinate systems and points: create systems (width×height), add a point per system with position and facing direction (N/S/E/W), and move points using commands (M=move forward, R=turn right, L=turn left). Uses PostgreSQL as the source of truth and an in-memory response cache.
 
+See [docs/architecture.md](docs/architecture.md) for a Mermaid flow of how the service is called from a gateway, how caching and cache eviction work, and how PostgreSQL is used.
+
 ## Project Structure
-https://medium.com/@codebob75/creating-and-consuming-apis-in-net-c-d24f9c414b96
+
 ```
-.
-├── .github/              # CI/CD workflows, repo settings, CODEOWNERS
-│   ├── workflows/
-│   │   ├── ci.yaml       # Build, test, lint on push/PR
-│   │   └── cd.yaml       # Build & push image on tag
-│   ├── settings.yaml     # GitHub repo settings
-│   └── CODEOWNERS
-├── config/               # C# appsettings per environment
-│   ├── appsettings.json
-│   ├── appsettings.Development.json
-│   ├── appsettings.Production.json
-│   └── appsettings.Test.json
-├── deploy/               # Helm chart for Kubernetes
-│   ├── Chart.yaml
-│   ├── .helmignore
-│   ├── templates/       # K8s manifests (deployment, service, ingress, PDB, etc.)
-│   └── values/           # Per-environment values (default, dev, stage, prod, local)
-├── docker/               # Docker files
-│   ├── docker-compose.yaml   # Local dev stack (app + PostgreSQL)
-│   ├── prod.Dockerfile       # Multi-stage production image
-│   └── test.Dockerfile       # Test runner image
-├── lib/                  # Application source
-│   └── CoordinateService/
-│       ├── Controllers/  # REST API (coordinate-systems, points)
-│       ├── Models/       # Request, Response, and Domain types
-│       ├── Services/     # PostgreSQL store, in-memory cache, health
-│       └── Program.cs    # Entry point
-├── test/                 # Unit tests
-│   └── CoordinateService.Tests/
-├── clients/              # OpenAPI-generated C# client
-│   └── CoordinateService.Client/
-├── clients_test/         # Client/integration tests (WebApplicationFactory)
-│   └── CoordinateService.ClientTests/
-├── scripts/              # E2E script (curl)
-│   └── e2e-test.sh
-├── openapi.json          # OpenAPI spec (see make generate-spec)
-├── CoordinateService.sln
-├── docker-bake.hcl       # Docker Buildx Bake definitions
-├── Makefile              # Dev commands
-└── README.md
+**.github/** — CI/CD workflows (ci, cd), repo settings
+**config/** — appsettings per environment
+**deploy/** — Helm chart (templates, values per env)
+**docker/** — docker-compose, prod/test Dockerfiles
+**lib/CoordinateService/** — app (Controllers, Models, Services, Program)
+**test/** — unit and DB persistence tests
+**clients/** — OpenAPI-generated C# client
+**clients_test/** — client/integration tests
+**scripts/** — E2E curl script
+**openapi.json**, **CoordinateService.sln**, **docker-bake.hcl**, **Makefile**
 ```
 
 ## Quick Start
@@ -68,10 +40,12 @@ make bake-test     # Build test image only
 ### Run tests
 
 ```bash
-make test          # Run tests locally (requires .NET SDK)
-make docker-test   # Build test image and run tests in Docker
-make e2e           # Start compose and run curl E2E script
+make test                  # All tests locally (requires .NET SDK; DB tests use Testcontainers)
+make docker-test           # Build test image and run tests in Docker
+make e2e                   # Start compose and run curl E2E script
 ```
+
+Database persistence tests call the API then query PostgreSQL to verify writes. Use test-db-writes-compose if you want to inspect data in the compose psql container after the run.
 
 ### OpenAPI spec
 
@@ -80,9 +54,12 @@ make up
 make generate-spec   # Fetches swagger from app and writes openapi.json
 ```
 
+
 ## API Endpoints
 
+
 Base URL when using Docker Compose: `http://localhost:18080`. The API is versioned under `/api/v1/`.
+
 
 ### Health
 
@@ -120,14 +97,15 @@ Response: updated position and direction (same shape as point). 400 if any move 
 
 ### Request IDs
 
-Send `X-Request-Id` on any request; the response echoes it back.
+Send X-Request-Id on any request; the response echoes it back.
 
 ### Example requests
-
 ```bash
 BASE="http://localhost:18080"
+```
 
 # Health
+```bash
 curl -s "$BASE/healthz"
 curl -s "$BASE/readyz"
 
@@ -161,37 +139,23 @@ curl -s -X DELETE "$BASE/api/v1/points/<point-id>"
 # Delete system
 curl -s -X DELETE "$BASE/api/v1/coordinate-systems/<system-id>"
 ```
-
 ## Client
 
-The C# client in `clients/CoordinateService.Client` is generated from `openapi.json` (NSwag). Register it with `IHttpClientFactory`:
-
+The C# client in clients/CoordinateService.Client is generated from openapi.json (NSwag). Register it with IHttpClientFactory:
 ```csharp
 services.AddCoordinateServiceClient("https://api.example.com/");
 // Then inject CoordinateServiceClient
 ```
-
-See `clients/CoordinateService.Client/README.md` for regeneration and options.
+See clients/CoordinateService.Client/README.md for regeneration and options.
 
 ## Architecture
-
-```
 Client → REST API → In-memory cache (optional) → PostgreSQL
 
 - Writes and cache invalidation go to PostgreSQL; reads use cache when present.
 - Health: /healthz (liveness), /readyz (readiness with Postgres check).
-```
-
-## Kubernetes Deployment
-
-```bash
-helm install coord-svc deploy/ -f deploy/values/values.yaml -f deploy/values/values-dev.yaml
-# Or production:
-helm install coord-svc deploy/ -f deploy/values/values.yaml -f deploy/values/values-prod.yaml
-```
 
 ## Configuration
 
-Environment-specific config is loaded via `ASPNETCORE_ENVIRONMENT` and corresponding `appsettings.{env}.json`. Override via environment:
+Environment-specific config is loaded via ASPNETCORE_ENVIRONMENT and corresponding appsettings.{env}.json.
 
-- `ConnectionStrings__Postgres` — PostgreSQL connection string
+ConnectionStrings__Postgres — PostgreSQL connection string
