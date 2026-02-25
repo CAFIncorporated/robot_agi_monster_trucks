@@ -8,7 +8,7 @@ on:
 
 jobs:
   docker-test:
-    nem: Unit & Client tests (container)
+    name: Unit & Client tests (container)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
