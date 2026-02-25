@@ -35,6 +35,6 @@ jobs:
           files: docker-bake.hcl
           targets: prod
           push: true
+            # prod.tags=ghcr.io/${{ env.REPOSITORY_OWNER }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
           set: |
-            prod.tags=ghcr.io/${{ env.REPOSITORY_OWNER }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
             prod.tags=ghcr.io/${{ env.REPOSITORY_OWNER }}/${{ env.IMAGE_NAME }}:latest
