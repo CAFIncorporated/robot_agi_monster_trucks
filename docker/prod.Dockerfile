@@ -16,7 +16,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
 USER root
-RUN groupadd --git 10001 svcuser && \
+RUN groupadd --gid 10001 svcuser && \
     useradd --uid 10001 --gid svcuser --shell /bin/false --create-home svcuser && \
     chown -R svcuser:svcuser /app
 
