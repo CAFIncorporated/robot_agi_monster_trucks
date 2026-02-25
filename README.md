@@ -3,7 +3,7 @@
 A .NET 10 microservice for coordinate systems and points: create systems (width×height), add a point per system with position and facing direction (N/S/E/W), and move points using commands (M=move forward, R=turn right, L=turn left). Uses PostgreSQL as the source of truth and an in-memory response cache.
 
 ## Project Structure
-
+https://medium.com/@codebob75/creating-and-consuming-apis-in-net-c-d24f9c414b96
 ```
 .
 ├── .github/              # CI/CD workflows, repo settings, CODEOWNERS
