@@ -22,8 +22,7 @@ See [docs/architecture.md](docs/architecture.md) for a Mermaid flow of how the s
 
 ### Local development with Docker Compose
 
-```
-bash
+```bash
 make up        # Start app + PostgreSQL (port 18080)
 make logs     # Tail logs
 make down     # Stop everything
@@ -31,8 +30,7 @@ make down     # Stop everything
 
 ### Build images
 
-```
-bash
+```bash
 make bake          # Build all images (prod + test)
 make bake-prod     # Build production image only
 make bake-test     # Build test image only
@@ -40,8 +38,7 @@ make bake-test     # Build test image only
 
 ### Run tests
 
-```
-bash
+```bash
 make test                  # All tests locally (requires .NET SDK; DB tests use Testcontainers)
 make test-db-writes        # DB persistence tests only (Testcontainers; container removed after)
 make test-db-writes-compose # DB persistence tests vs compose stack; data stays in psql for inspection (run make up first)
@@ -53,8 +50,7 @@ Database persistence tests call the API then query PostgreSQL to verify writes. 
 
 ### OpenAPI spec
 
-```
-bash
+```bash
 make up
 make generate-spec   # Fetches swagger from app and writes openapi.json
 ```
@@ -103,10 +99,12 @@ Response: updated position and direction (same shape as point). 400 if any move 
 Send X-Request-Id on any request; the response echoes it back.
 
 ### Example requests
-bash
+```bash
 BASE="http://localhost:18080"
+```
 
 # Health
+```bash
 curl -s "$BASE/healthz"
 curl -s "$BASE/readyz"
 
@@ -139,7 +137,7 @@ curl -s -X DELETE "$BASE/api/v1/points/<point-id>"
 
 # Delete system
 curl -s -X DELETE "$BASE/api/v1/coordinate-systems/<system-id>"
-
+```
 ## Client
 
 The C# client in clients/CoordinateService.Client is generated from openapi.json (NSwag). Register it with IHttpClientFactory:
