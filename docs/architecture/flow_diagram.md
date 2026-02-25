@@ -4,7 +4,7 @@ The service is intended to be called from a **gateway service** inside the clust
 
 ## Request flow (gateway → service → cache → PostgreSQL)
 
-mermaid
+```mermaid
 flowchart LR
     subgraph cluster["Kubernetes cluster"]
         GW[Gateway Service]
@@ -17,13 +17,13 @@ flowchart LR
         GW -->|"HTTP /api/v{version}/..."| API
     end
     DB[(PostgreSQL)]
-
+```
 ## Cache and database behaviour
 
 **Read path:** API checks the cache first (by key, e.g. point:{id} or system:{id}). On cache miss, the service reads from PostgreSQL, stores the result in the cache, then returns the response.
 **Write path (create/update/delete):** The service always writes to PostgreSQL first, then **evicts** the relevant cache entries so the next read sees fresh data from the database.
 
-mermaid
+```mermaid
 flowchart TB
     subgraph read["Read (e.g. GET point)"]
         R1[Request] --> R2{Cache hit?}
@@ -38,6 +38,7 @@ flowchart TB
         W2 --> W3[Evict cache for affected keys]
         W3 --> W4[Return]
     end
+```
 
 ## How PostgreSQL is used
 
