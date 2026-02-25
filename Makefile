@@ -1,4 +1,4 @@
-.PHONY: help bake bake-prod bake-test up down logs docker-test test e2e clean generate-spec
+.PHONY: help bake bake-prod bake-test up down logs docker-test test e2e clean generate-spec generate-client
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
@@ -51,6 +51,11 @@ generate-spec: up ## Extract OpenAPI spec from running service
 	done
 	curl -s http://localhost:18080/swagger/v1/swagger.json | python3 -m json.tool > openapi.json
 	@echo "Saved openapi.json"
+
+# NOTE: Open issue for generated nullable types https://github.com/RicoSuter/NSwag/issues/4592. gives warnings
+generate-client: generate-spec
+	dotnet build clients/CoordinateService.Client/CoordinateService.Client.csproj --verbosity quiet
+	@echo "CoordinateServiceClient generate in clients/COordinateService.Client/Generated/"
 
 # --- Lint ---
 
