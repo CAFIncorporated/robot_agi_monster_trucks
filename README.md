@@ -71,10 +71,9 @@ Base URL when using Docker Compose: `http://localhost:18080`. The API is version
 
 | Method   | Path                              | Description                    |
 |----------|-----------------------------------|--------------------------------|
-| POST   | /api/v1/coordinate-systems      | Create system (returns id)   |
-| GET    | /api/v1/coordinate-systems/{id} | Get system (includes point)    |
-| DELETE | /api/v1/coordinate-systems/{id} | Delete system (204 No Content) |
-
+| `POST`   | `/api/v1/coordinate-systems`      | Create system (returns `id`)   |
+| `GET`    | `/api/v1/coordinate-systems/{id}` | Get system (includes point)    |
+| `DELETE` | `/api/v1/coordinate-systems/{id}` | Delete system (204 No Content) |
 
 ### Points
 
