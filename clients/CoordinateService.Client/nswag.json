@@ -24,7 +24,8 @@
       "arrayType": "System.Collections.Generic.IList",
       "arrayInstanceType": "System.Collections.Generic.List",
       "jsonLibrary": "SystemTextJson",
-      "output": "Generated/CoordinateServiceClient.g.cs"
+      "output": "Generated/CoordinateServiceClient.g.cs",
+      "generateNullableReferenceTypes": false
     }
   }
 }
