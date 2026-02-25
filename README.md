@@ -40,8 +40,6 @@ make bake-test     # Build test image only
 
 ```bash
 make test                  # All tests locally (requires .NET SDK; DB tests use Testcontainers)
-make test-db-writes        # DB persistence tests only (Testcontainers; container removed after)
-make test-db-writes-compose # DB persistence tests vs compose stack; data stays in psql for inspection (run make up first)
 make docker-test           # Build test image and run tests in Docker
 make e2e                   # Start compose and run curl E2E script
 ```
@@ -58,14 +56,16 @@ make generate-spec   # Fetches swagger from app and writes openapi.json
 
 ## API Endpoints
 
-Base URL when using Docker Compose: http://localhost:18080. The API is versioned under /api/v1/.
+
+Base URL when using Docker Compose: `http://localhost:18080`. The API is versioned under `/api/v1/`.
+
 
 ### Health
 
 | Method | Path      | Description                    |
 |--------|-----------|--------------------------------|
-| GET  | /healthz | Liveness probe                 |
-| GET  | /readyz  | Readiness (includes Postgres)  |
+| `GET`  | `/healthz` | Liveness probe                 |
+| `GET`  | `/readyz`  | Readiness (includes Postgres)  |
 
 ### Coordinate systems
 
@@ -75,22 +75,23 @@ Base URL when using Docker Compose: http://localhost:18080. The API is versioned
 | GET    | /api/v1/coordinate-systems/{id} | Get system (includes point)    |
 | DELETE | /api/v1/coordinate-systems/{id} | Delete system (204 No Content) |
 
+
 ### Points
 
 | Method   | Path                                          | Description                          |
 |----------|-----------------------------------------------|--------------------------------------|
-| POST   | /api/v1/coordinate-systems/{systemId}/points | Create point in system (one per system) |
-| GET    | /api/v1/points/{pointId}                    | Get point by ID                      |
-| POST   | /api/v1/points/{pointId}/move               | Move by commands (see below)         |
-| DELETE | /api/v1/points/{pointId}                    | Delete point (204 No Content)        |
+| `POST`   | `/api/v1/coordinate-systems/{systemId}/points` | Create point in system (one per system) |
+| `GET`    | `/api/v1/points/{pointId}`                    | Get point by ID                      |
+| `POST`   | `/api/v1/points/{pointId}/move`               | Move by commands (see below)         |
+| `DELETE` | `/api/v1/points/{pointId}`                    | Delete point (204 No Content)        |
 
 ### Move commands
 
-POST /api/v1/points/{pointId}/move body: { "commands": ["M", "R", "L", ...] }
+`POST /api/v1/points/{pointId}/move` body: `{ "commands": ["M", "R", "L", ...] }`
 
-**M** — Move one step in current direction (N=Y−1, S=Y+1, E=X+1, W=X−1).
-**R** — Turn right (e.g. E→S, S→W, W→N, N→E).
-**L** — Turn left (e.g. E→N, N→W, W→S, S→E).
+- **M** — Move one step in current direction (N=Y−1, S=Y+1, E=X+1, W=X−1).
+- **R** — Turn right (e.g. E→S, S→W, W→N, N→E).
+- **L** — Turn left (e.g. E→N, N→W, W→S, S→E).
 
 Response: updated position and direction (same shape as point). 400 if any move goes out of bounds or commands are invalid.
 
@@ -141,10 +142,10 @@ curl -s -X DELETE "$BASE/api/v1/coordinate-systems/<system-id>"
 ## Client
 
 The C# client in clients/CoordinateService.Client is generated from openapi.json (NSwag). Register it with IHttpClientFactory:
-csharp
+```csharp
 services.AddCoordinateServiceClient("https://api.example.com/");
 // Then inject CoordinateServiceClient
-
+```
 See clients/CoordinateService.Client/README.md for regeneration and options.
 
 ## Architecture
