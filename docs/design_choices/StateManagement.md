@@ -1,11 +1,23 @@
-would redis run as sidecar to the robot service. seems redis is usually good for caching information if multiple pods would need the cached data. otherwise the service could just store data in service and as long as requests are routed correctly data would be stored in memory of the service.
+# State Management
 
-psql should maybe be behind its own service and act as a shared db for the multiple services in the namespace. 
-depends on how many services are already using a central database and if there is already a database service running in the cluster that can be used.
-also depends on amount of request being made and if there would be a bottleneck impact from other services that would harm the performance of the API. 
+Where should the service keep state: in-memory only, with a shared cache (e.g. Redis), or with a database as source of truth?
 
-psql is used for source of truth this is only needed if the solution would need long term storage (problem would be if early requests are pushed out of memory by later requests. as there is no guarantee a database is needed.
+## Options
 
-# Conclusion
-Psql database is best solution as no shared cached data is needed between services. 
-Services cannot guarentee that data will be in memory and need a source of truth for the data.
+**A. In-memory only** — Store coordinate systems and points in process memory.
+
+**B. Redis (or shared cache) + optional DB** — Use Redis for caching and possibly as shared state; optional PostgreSQL for durability.
+
+**C. PostgreSQL as source of truth** — Use PostgreSQL for persistent storage; optional in-process cache for reads.
+
+## Pros and cons
+
+| Option | Pros | Cons |
+|--------|------|------|
+| **A. In-memory** | No external dependencies; very fast. | Data lost on restart; no sharing across pods; early data can be evicted under load. |
+| **B. Redis** | Good when multiple pods need the same cached data; can reduce DB load. | Extra component (Redis sidecar or cluster); still need a durable store if data must survive restarts. |
+| **C. PostgreSQL** | Durable source of truth; works across restarts and replicas; no guarantee that “everything stays in memory.” | Requires a DB (e.g. shared PostgreSQL in the namespace); slightly more ops and latency than pure memory. |
+
+## Decision
+
+**PostgreSQL as source of truth**, with an in-process cache for reads. The service cannot rely on in-memory state alone (no guarantee data stays in memory across requests or restarts). A shared cache (e.g. Redis) is not required for the current use case. PostgreSQL provides long-term storage; the app uses it for all writes and cache invalidation, and caches reads where useful.

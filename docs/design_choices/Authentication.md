@@ -1,21 +1,23 @@
 # API Access and Authentication
-ingress with users with some authentication?
-- probably not needed, but client for this can be drafted for demo purpose and for e2e testing. 
-- e2e is tested with curl requests.
 
-integration between service.
-- internal client pod that can be used to send requests to the API for testing and demo purposes. this client can be a simple script or application that runs inside the cluster and can be accessed via kubectl exec or port forwarding. this allows for easy testing of the API without needing to expose it externally.
+How should the API be exposed and who can call it? Should we add user or application authentication?
 
-or is this API just an internal service that should just be available to other services in namespaced cluster.
-- make netpol for services and store app names in values.yaml file.
+## Options
 
-# User Authentication
-Is any authentication needed and if so is it tied to users or applications.
-This would only enhance the security as rowlevel/table security could be implemented to restrict any access to data without proper authentication.
-- if this is an internal API that is only used by other services in the cluster, then authentication may not be necessary, as the services can be trusted to communicate with each other within the cluster. However, if there is a possibility of external access or if there are multiple teams working on the same cluster, then implementing authentication can help ensure that only authorized users or applications can access the API and the data it manages.
+**A. Internal-only, no auth** — API is reachable only by other services in the cluster (e.g. via gateway); no authentication.
 
-for this solution it seems it is not needed and it is assumed that the API is only called by other services in the cluster where access or data processing is obfuscated and not needed to be tied to an end user or application. if there is a need for authentication in the future, it can be implemented using a simple token-based authentication mechanism or by integrating with an existing authentication service in the cluster. the database would also need to be configured to support authentication and authorization, such as by creating user accounts and assigning appropriate permissions to access the data.
+**B. Internal + network policy** — Same as A, with Kubernetes NetworkPolicy so only named services (e.g. from `values.yaml`) can reach the API.
 
-# Conclusion
-Authentication is not needed for this solution as it is assumed that the API is only called by internal services.
+**C. External or multi-tenant + auth** — API may be called by external clients or multiple teams; add token-based or integration with a central auth service; DB and API enforce auth.
 
+## Pros and cons
+
+| Option | Pros | Cons |
+|--------|------|------|
+| **A. Internal, no auth** | Simple; no tokens or user management; fits single-tenant, in-cluster callers. | No protection if network is compromised or if API is exposed by mistake. |
+| **B. Internal + netpol** | Limits which pods can talk to the API; easy to maintain (service names in values). | Still no authentication; only restricts by pod identity. |
+| **C. Auth** | Enables row-level/table security and audit; supports multi-tenant or external access. | More complexity (tokens, user/app identity, DB permissions); may be unnecessary for internal-only use. |
+
+## Decision
+
+**Internal-only, no authentication.** The API is intended to be called by a gateway or other services inside the cluster; access and data handling are not tied to end users or applications (for now). If requirements change (external access or multi-team use), we can add token-based auth or integrate with an existing auth service and tighten DB permissions later.
