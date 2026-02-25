@@ -15,9 +15,16 @@ RUN dotnet restore lib/CoordinateService/CoordinateService.csproj && \
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
-COPY --from=build /app/publish .
-COPY config/appsettings.json .
-COPY config/appsettings.Production.json .
+USER root
+RUN groupadd --git 10001 svcuser && \
+    useradd --uid 10001 --gid svcuser --shell /bin/false --create-home svcuser && \
+    chown -R svcuser:svcuser /app
+
+COPY --from=build --chown=svcuser:svcuser /app/publish .
+COPY --chown=svcuser:svcuser config/appsettings.json .
+COPY --chown=svcuser:svcuser config/appsettings.Production.json .
+
+USER svcuser
 
 ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
