@@ -2,7 +2,7 @@
 
 A .NET 10 microservice for coordinate systems and points: create systems (width×height), add a point per system with position and facing direction (N/S/E/W), and move points using commands (M=move forward, R=turn right, L=turn left). Uses PostgreSQL as the source of truth and an in-memory response cache.
 
-See [docs/architecture.md](docs/architecture.md) for a Mermaid flow of how the service is called from a gateway, how caching and cache eviction work, and how PostgreSQL is used.
+See [docs/architecture](docs/architecture/flow_diagram.md) for a Mermaid flow of how the service is called from a gateway, how caching and cache eviction work, and how PostgreSQL is used.
 
 ## Project Structure
 
