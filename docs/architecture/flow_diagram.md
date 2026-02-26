@@ -60,15 +60,14 @@ Request flow through the service: middleware → routing → action filters (san
 ```mermaid
 flowchart TB
     subgraph Request["Request pipeline"]
-        A[Request] --> B[RequestId middleware]
-        B --> C[Routing]
-        C --> D[Sanitization action filter]
-        D --> E[Controller action]
-        E --> F[Metrics action filter wraps action]
+        A[Request] --> B[Routing]
+        B --> C[Sanitization action filter]
+        C --> D[Controller action]
+        D --> E[Metrics action filter wraps action]
     end
 
     subgraph Controller["Controller layer"]
-        E
+        D
     end
 
     subgraph Services["Services"]
@@ -80,17 +79,15 @@ flowchart TB
         I[(PostgreSQL)]
     end
 
-    F --> G
-    F --> H
+    E --> G
+    E --> H
     G --> H
     H --> I
 
-    B --> |"Set/echo X-Request-Id"| B
-    D --> |"Sanitize action args (ISanitizer)"| D
-    F --> |"Record duration (IMetricsRecorder)"| F
+    C --> |"Sanitize action args (ISanitizer)"| D
+    E --> |"Record duration (IMetricsRecorder)"| F
 ```
 
-- **RequestId middleware** — Runs first; reads or generates `X-Request-Id`, stores it in `HttpContext.Items`, and echoes it in the response header.
 - **Sanitization filter** — Runs before the action; resolves `ISanitizer<T>` for each action argument and replaces arguments with sanitized values (e.g. trim strings, escape).
 - **Metrics filter** — Wraps the action; records duration per operation (e.g. `PointsController.Move`) via `IMetricsRecorder` (e.g. console logging).
 - **Controller** — Uses `ICacheService` for read-through cache and `ICoordinateStore` for all DB access; writes go to the store then evict cache.
