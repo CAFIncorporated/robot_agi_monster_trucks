@@ -84,8 +84,8 @@ flowchart TB
     G --> H
     H --> I
 
-    C --> |"Sanitize action args (ISanitizer)"| D
-    E --> |"Record duration (IMetricsRecorder)"| F
+    C --> |"Sanitize action args (ISanitizer)"| C
+    E --> |"Record duration (IMetricsRecorder)"| E
 ```
 
 - **Sanitization filter** — Runs before the action; resolves `ISanitizer<T>` for each action argument and replaces arguments with sanitized values (e.g. trim strings, escape).
